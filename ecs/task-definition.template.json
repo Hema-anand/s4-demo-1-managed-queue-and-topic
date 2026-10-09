@@ -1,0 +1,36 @@
+{
+  "family": "application-service",
+  "executionRoleArn": "EXECUTION_ROLE_ARN",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "application",
+      "image": "IMAGE_URI",
+      "essential": true,
+      "portMappings": [{"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}],
+      "environment": [{"name": "APP_VERSION", "value": "GIT_SHA"},
+  {"name": "AWS_ENDPOINT_URL", "value": "http://floci:4566"},
+  {"name": "AWS_DEFAULT_REGION", "value": "us-east-1"},
+  {"name": "AWS_ACCESS_KEY_ID", "value": "test"},
+  {"name": "AWS_SECRET_ACCESS_KEY", "value": "test"}],
+      "healthCheck": {
+        "command": ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=2)"],
+        "interval": 10,
+        "timeout": 3,
+        "retries": 3,
+        "startPeriod": 10
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/application-service",
+          "awslogs-region": "AWS_REGION",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

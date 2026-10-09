@@ -1,0 +1,26 @@
+# Runs Floci 2.2.0 for local registry, ECS, messaging and database operations.
+# Gives Floci access to Docker so ECS tasks and databases run as real containers.
+# Stores Floci's data in ./data inside this project, so nothing outside it is needed.
+
+services:
+  floci:
+    image: floci/floci:2.2.0
+    ports:
+      - "127.0.0.1:4566:4566"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+    environment:
+      FLOCI_STORAGE_MODE: hybrid
+      FLOCI_STORAGE_PERSISTENT_PATH: /app/data
+      FLOCI_SERVICES_ECS_MOCK: "false"
+      FLOCI_SERVICES_ECS_DOCKER_NETWORK: sprint4-local
+      FLOCI_SERVICES_ECS_PUBLISH_AWSVPC_PORTS_TO_HOST: "true"
+      FLOCI_SERVICES_ECS_IMAGE_PULL_BEHAVIOR: always
+      FLOCI_SERVICES_ECR_PREFER_LOCAL_IMAGES: "false"
+    networks:
+      - local
+
+networks:
+  local:
+    name: sprint4-local
