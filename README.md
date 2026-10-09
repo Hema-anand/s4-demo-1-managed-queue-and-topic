@@ -1,6 +1,4 @@
-# Sprint 4: Work with Managed Messaging and Database Services
-
-## Demo 1: Decouple an Application with a Managed Queue and Topic
+# Sprint 4 — Demo 1: Decouple an Application with a Managed Queue and Topic
 
 **Learning outcome:** Use a managed queue and a notification topic to pass work and broadcast events between application components.
 
@@ -44,6 +42,7 @@ aws iam put-role-policy --role-name application-execution-role --policy-name app
 ## 3. Install dependencies and run tests
 
 ```bash
+python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m unittest discover -s tests -v
 ```
@@ -53,6 +52,7 @@ aws iam put-role-policy --role-name application-execution-role --policy-name app
 ## 4. Publish and deploy the new image
 
 ```bash
+git status --short
 git add . && git commit -m 'Add queue and topic support'
 DEMO_SHA=$(git rev-parse HEAD)
 .venv/bin/python -m scripts.prepare_local
@@ -62,7 +62,7 @@ export FLOCI_SUBNET_ID="$(.venv/bin/python -c 'import json; print(json.load(open
 .venv/bin/python -m scripts.deploy
 ```
 
-**Why:** The application code changed, so a new image is built once. Later steps only change settings and redeploy this same image.
+**Why:** The application code changed, so a new image is built once. `git status --short` should not list `data`, `.venv`, `local-config.json` or `.generated` (they are ignored). Run the two `export` lines after `prepare_local`, and again whenever it is rerun. If Git asks who you are, run `git config user.name 'YOUR_NAME'` and `git config user.email 'YOUR_EMAIL'`, then commit again. Later steps only change settings and redeploy this same image.
 
 **Expected:** `ecs_health` is `HEALTHY` and `health.version` matches `$DEMO_SHA`. `prepare_local` creates the registry repository, log group and cluster, and `deploy` creates the service.
 
