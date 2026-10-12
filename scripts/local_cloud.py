@@ -14,8 +14,10 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = "application-service"
 LOG_GROUP = "/ecs/application-service"
-CLUSTER = "sprint2-cluster"
+CLUSTER = "sprint4-cluster"
 SERVICE = "application-service"
+VPC_NAME = "sprint4-demo-vpc"
+SUBNET_NAME = "sprint4-demo-subnet"
 
 
 def local_url(name):
