@@ -11,7 +11,7 @@ from scripts.local_cloud import CLUSTER, LOG_GROUP, REPOSITORY, ROOT, aws, execu
 
 
 def main():
-    role = execution_role()  # Fail early if LO1 or its persisted data is missing.
+    role = execution_role()  
     try:
         repository = aws("ecr", "describe-repositories", "--repository-names", REPOSITORY)["repositories"][0]
     except subprocess.CalledProcessError as error:

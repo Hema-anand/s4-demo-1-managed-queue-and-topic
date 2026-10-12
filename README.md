@@ -11,6 +11,18 @@ The Sprint 2 application is extended so `/chat` also sends each message to a que
 - Only one Floci can run at a time (port 4566). If an earlier sprint's Floci is running, stop it from that project's folder with `docker compose down`.
 - Open **two terminals** in this project's root. Use **Terminal 1** unless a step says Terminal 2. If you open a new terminal, repeat Step 2's variables.
 
+## Reset (only when starting over, or switching from another demo's Floci)
+
+```bash
+docker compose down
+docker ps -aq --filter name=floci-aws | xargs -r docker rm -f
+docker volume rm floci-aws-ecr-registry-data
+docker network rm sprint4-local
+sudo rm -rf data local-config.json .generated
+```
+
+**Why:** Floci starts its own containers (application, database, registry) and keeps the registry's images in a Docker volume outside `data`. Removing only `data` leaves them behind. Errors about items that do not exist are fine.
+
 ## 1. Start Floci
 
 ```bash
@@ -176,6 +188,7 @@ Keep Floci, the queue, the topic and the deployed application running for Demo 2
 | Worker prints `QueueDoesNotExist` | Check the name with `aws sqs list-queues --endpoint-url "$FLOCI_ENDPOINT"`. |
 | Worker cannot find credentials | Repeat Terminal 2's `export` line. |
 | Messages sent but worker prints nothing | `QUEUE_NAME` was lost (new terminal) or `deploy` was not rerun. Export it and redeploy. |
+| `prepare_local` reports `RepositoryAlreadyExistsException` | Floci's registry started during the first call. Run `prepare_local` once more. |
 | Port 4566 in use | Another Floci is running. Stop it with `docker compose down` in its project folder. |
 | `create-role` says the role exists | It was kept in `data` from an earlier run. Continue. |
 | Role missing after a restart | The `data` folder was deleted. Repeat Step 2. |

@@ -38,7 +38,10 @@ def region():
 def aws(service, operation, *arguments):
     command = ["aws", service, operation, *arguments, "--endpoint-url", local_url("FLOCI_ENDPOINT"),
                "--region", region(), "--output", "json", "--no-cli-pager"]
-    result = subprocess.run(command, capture_output=True, text=True, check=True, timeout=60)
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=True, timeout=60)
+    except subprocess.CalledProcessError as error:
+        raise RuntimeError(f"AWS CLI failed: {error.stderr.strip()}") from None
     return json.loads(result.stdout) if result.stdout.strip() else {}
 
 
